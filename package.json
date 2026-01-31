@@ -1,0 +1,21 @@
+{
+    "name": "hidencloud-local-renew",
+    "version": "2.0.0",
+    "description": "HidenCloud 本地自动续期脚本",
+    "main": "local_renew.js",
+    "scripts": {
+        "start": "node local_renew.js",
+        "renew": "node local_renew.js"
+    },
+    "keywords": [
+        "hidencloud",
+        "auto-renew",
+        "automation"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "axios": "^1.6.0",
+        "cheerio": "^1.0.0-rc.12"
+    }
+}

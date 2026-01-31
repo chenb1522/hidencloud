@@ -1,0 +1,30 @@
+# 依赖
+node_modules/
+package-lock.json
+
+# Cookie 配置文件（敏感信息）
+cookie.json
+hiden_cookies_cache.json
+
+# 旧的缓存
+hiden_cookies.json
+
+# 日志文件
+*.log
+renew.log
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.tmp
+*.temp
