@@ -46,13 +46,30 @@
    }
    ```
 
-### 步骤 2️⃣：运行脚本
+### 步骤 2️⃣：配置 Chrome 路径（仅方案 A 需要）
 
-#### 方法一：双击批处理文件（Windows）
+使用 **方案 A** 时，请确保 `win_login.js` 中的 Chrome 浏览器路径与你的本机路径一致。
 
-直接双击 `start.bat` 文件
+1. 打开 `win_login.js` 文件。
+2. 找到代码：
+   ```javascript
+   const CHROME_PATH = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+   ```
+3. 检查你的电脑中 `chrome.exe` 的安装位置。如果不同，请**手动替换**路径字符串。
 
-#### 方法二：使用命令行
+### 步骤 3️⃣：运行脚本
+
+#### 方法一：一键自动登录 
+
+双击 **`start.bat`** 文件。
+脚本会自动执行以下流程：
+
+1. 运行 `win_login.js` 自动打开本地 Chrome 获取 Cookie。
+2. 成功后，自动运行 `local_renew.js` 进行续期。
+
+#### 方法二：分步运行
+
+如果你只想单独运行续期（假设已有 `cookie.json`）：
 
 ```bash
 npm start

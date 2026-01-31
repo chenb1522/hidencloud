@@ -15,14 +15,16 @@ An automated renewal script for HidenCloud services, supporting three deployment
 - 📊 **Detailed Logging**: Real-time progress and result output
 - 🛡️ **Smart Retry**: Auto fallback retry when cookies expire
 - 🔐 **Secure & Reliable**: GitHub Actions automatically updates repository variables
+- 📜 **Workflow Comparison**: Offers various [Workflow Options](./WORKFLOWS.md) to adapt to verification strategies
 
 ## 🚀 Deployment Methods
 
 ### Method 1: Local Execution (Recommended for Beginners)
 
 **Prerequisites:**
+
 - Node.js (v14 or higher recommended)
-- npm packages: run `npm install`
+- npm packages: `axios`, `cheerio`, `playwright`, `playwright-extra`, `puppeteer-extra-plugin-stealth`
 
 **Quick Start:**
 
@@ -35,28 +37,30 @@ Fully automated in the cloud, no local environment needed, automatic Cookie upda
 **Configuration Steps:**
 
 1. **Fork this repository** to your GitHub account
+2. **Set Repository Secret**
 
-39: 2. **Set Repository Secret**
-40:    - Go to your forked repository → Settings → Secrets and variables → Actions
-41:    - Click New repository secret
-42:    - Name: `USERS_JSON`
-43:    - Secret: Paste your account configuration JSON (format below)
-44:      ```json
-45:      [
-46:        {"username": "user1@example.com", "password": "password123"},
-47:        {"username": "user2@example.com", "password": "password456"}
-48:      ]
-49:      ```
-50: 
-51: 3. **Enable GitHub Actions**
-52:    - Go to Actions tab
-53:    - If prompted, click "I understand my workflows, go ahead and enable them"
-54: 
-55: 4. **Manual Test Run**
-56:    - Actions → Katabump Auto Renew New → Run workflow
-57:    - Check run logs to confirm success
+   - Go to your forked repository → Settings → Secrets and variables → Actions
+   - Click New repository secret
+   - Name: `USERS_JSON`
+   - Secret: Paste your account configuration JSON (format below)
+     ```json
+     [
+       {"username": "user1@example.com", "password": "password123"},
+       {"username": "user2@example.com", "password": "password456"}
+     ]
+     ```
+3. **Enable GitHub Actions**
+
+   - Go to Actions tab
+   - If prompted, click "I understand my workflows, go ahead and enable them"
+
+4. **Manual Test Run**
+
+   - Actions → Katabump Auto Renew New → Run workflow
+   - Check run logs to confirm success
 
 **Workflow Details:**
+
 - Auto-run: Triggers every 3 days automatically
 - Manual trigger: Can be run anytime from Actions page
 - Cookie auto-update: Automatically updates repository variables after execution
@@ -73,6 +77,38 @@ Suitable for users who already have Qinglong Panel.
 
 See comments in file for details.
 
+## 🚀 Usage Guide
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Prepare Cookie File
+
+Create `cookie.json` in the same directory as the script, formatted as follows:
+
+```json
+{
+    "cookie1": "Full Cookie string for your first account",
+    "cookie2": "Full Cookie string for your second account",
+    "cookie3": ""
+}
+```
+
+**Note:**
+
+- Fields must be named `cookie1`, `cookie2`, `cookie3`, etc.
+- Empty fields are automatically ignored
+- See below for how to obtain cookies
+
+### 3. Run Script
+
+```bash
+node local_renew.js
+```
+
 ## 🍪 How to Get Cookies
 
 ### Method 1: Browser DevTools
@@ -86,13 +122,14 @@ See comments in file for details.
 
 ### Method 2: Browser Extension
 
-Use cookie export extensions like EditThisCookie or Cookie-Editor.
+Use cookie export extensions like EditThisCookie or Cookie-Editor to export directly.
 
 ### Method 3: Windows Auto Retrieval (Recommended)
 
 If you are running locally on Windows, you can use the provided auto-login script to generate cookies.
 
 1. **Prepare Account File**: Create `users.json` in the project root directory:
+
    ```json
    [
      {"username": "your_email", "password": "your_password"},
@@ -100,11 +137,20 @@ If you are running locally on Windows, you can use the provided auto-login scrip
    ]
    ```
 2. **Run Login Script**:
+
    ```bash
    node win_login.js
    ```
+
    The script will launch Chrome, login, solve verification, and save cookies to `cookie.json`.
-3. **Done**: Once `cookie.json` is generated, proceed to run the renewal script.
+
+3. **Configure Chrome Path**:
+   Open `win_login.js`, find the line `const CHROME_PATH = ...`.
+   Change the path to your actual Chrome installation path (e.g., `'D:\\Software\\Chrome\\Application\\chrome.exe'`).
+
+#### **One-Click Run**:
+   Double click the `start.bat` script.
+   It automatically executes: **Login & Get Cookie** → **Generate `cookie.json`** → **Execute Renewal**.
 
 ## ⚙️ Configuration
 
@@ -150,12 +196,10 @@ const CACHE_FILE = path.join(__dirname, 'hiden_cookies_cache.json');  // Cache f
 
 ```
 ╔════════════════════════════════════════════╗
-║   HidenCloud Auto Renewal Script v3.0    ║
+║   HidenCloud Local Auto Renewal v2.0      ║
 ╚════════════════════════════════════════════╝
 
-☁️  Detected environment variables, using cloud mode
-
-📋 Found 2 accounts (cloud mode)
+📋 Found 2 accounts
 
 ==================================================
 Processing: cookie1 (1/2)
@@ -186,9 +230,29 @@ Processing: cookie1 (1/2)
 
 1. **Cookie Security**: Keep `cookie.json` file secure, don't share with others
 2. **Regular Updates**: Cookies may expire, update promptly when invalid
-3. **Run Frequency**: Recommended to set scheduled task to run every 7 days (every 3 days for Cloud mode recommended)
+3. **Run Frequency**: Recommended to set scheduled task to run every 7 days
 4. **Network**: Ensure network can access hidencloud.com
-5. **Private Repo**: Use private repository for GitHub Actions to enhance security
+
+## 🤖 Scheduled Tasks
+
+### Windows Task Scheduler
+
+1. Open "Task Scheduler"
+2. Create Basic Task
+3. Set trigger to run every 7 days
+4. Action: "Start a program"
+5. Program/script: `node`
+6. Add arguments: full path to the script
+
+### Linux/Mac Crontab
+
+```bash
+# Edit crontab
+crontab -e
+
+# Add task (Run every Monday at 10 AM)
+0 10 * * 1 cd /path/to/hidencloud && node local_renew.js >> renew.log 2>&1
+```
 
 ## 🆚 Deployment Comparison
 
@@ -197,12 +261,9 @@ Processing: cookie1 (1/2)
 | Environment | Local Node.js | GitHub Cloud | Qinglong Container |
 | Cookie Source | cookie.json | Repo Variables | Env Variables |
 | Auto Schedule | Manual setup | ✅ Built-in | ✅ Built-in |
-| Cookie Auto-Update | ✅ Local cache | ✅ Auto push to repo | ✅ Local cache |
+| Cookie Auto-Update | ✅ Local cache | ❌ IP changes invalidate cache | ✅ Local cache |
 | Notifications | ❌ | ❌ | ✅ |
 | Multi-Account | ✅ | ✅ | ✅ |
-| Free to Use | ✅ | ✅ | Self-hosted |
-| Recommendation | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-
 
 ## 🐛 Troubleshooting
 
@@ -211,21 +272,23 @@ Processing: cookie1 (1/2)
 **Symptom**: Shows "Current Cookie has expired"
 
 **Solution**:
+
 1. Re-login to HidenCloud
 2. Get latest Cookie
-3. Update `cookie.json` or repository variables
+3. Update `cookie.json`
 
 ### Dependency Installation Failed
 
 **Symptom**: `npm install` errors
 
 **Solution**:
+
 ```bash
 # Clear cache
 npm cache clean --force
 
 # Reinstall
-npm install axios cheerio
+npm install
 ```
 
 ### Network Timeout
@@ -233,19 +296,10 @@ npm install axios cheerio
 **Symptom**: Request timeout or connection failed
 
 **Solution**:
+
 1. Check network connection
 2. Try using a proxy
 3. Increase `timeout` value in script
-
-### GitHub Actions Failures
-
-**Symptom**: Workflow fails to run
-
-**Solution**:
-1. Check if `ACTION_VARS_TOKEN` is set correctly
-2. Verify Token has Variables (Read and write) permission
-3. Ensure repository variables are configured
-4. Check Actions logs for detailed error messages
 
 ## 📜 License
 
@@ -253,6 +307,4 @@ MIT License
 
 ## 🙏 Acknowledgments
 
-Thanks to HidenCloud for their services!
-
-Special thanks to [gally16](https://linux.do/u/gally16) for the original Qinglong script! This project optimized it and added GitHub Actions deployment and Windows local support.
+Thanks to [gally16](https://linux.do/u/gally16) for the original Qinglong script! This project optimized it and added GitHub Actions deployment and Windows local support.

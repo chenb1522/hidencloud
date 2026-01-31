@@ -17,7 +17,6 @@
 - 🔐 **安全可靠**：GitHub Actions 自动更新仓库变量中的 Cookie
 - 📜 **工作流对比**：提供多种[工作流选择](./WORKFLOWS.md)，灵活应对验证策略
 
-
 ## 🚀 部署方式
 
 ### 方式一：本地运行（推荐新手）
@@ -25,7 +24,7 @@
 **前置要求：**
 
 - Node.js (建议 v14 或更高版本)
-- npm 包依赖：`axios`, `cheerio`
+- npm 包依赖：`axios`, `cheerio`, `playwright`, `playwright-extra`, `puppeteer-extra-plugin-stealth`
 
 **快速开始：**
 
@@ -38,8 +37,8 @@
 **配置步骤：**
 
 1. **Fork 本仓库**到你的 GitHub 账号
-1. **Fork 本仓库**到你的 GitHub 账号
-2. **设置仓库 Secret**
+2. **Fork 本仓库**到你的 GitHub 账号
+3. **设置仓库 Secret**
 
    - 进入你 Fork 的仓库 → Settings → Secrets and variables → Actions
    - 点击 New repository secret
@@ -51,13 +50,11 @@
        {"username": "user2@example.com", "password": "password456"}
      ]
      ```
-
-3. **启用 GitHub Actions**
+4. **启用 GitHub Actions**
 
    - 进入 Actions 标签
    - 如果看到提示，点击 "I understand my workflows, go ahead and enable them"
-
-4. **手动运行测试**
+5. **手动运行测试**
 
    - Actions → Katabump Auto Renew New → Run workflow
    - 查看运行日志确认成功
@@ -130,6 +127,7 @@ node local_renew.js
 如果您是在 Windows 本地运行，可以使用提供的自动登录脚本来生成 Cookie。
 
 1. **准备账号文件**：在项目根目录创建 `users.json`，格式如下：
+
    ```json
    [
      {"username": "你的邮箱", "password": "你的密码"},
@@ -137,11 +135,18 @@ node local_renew.js
    ]
    ```
 2. **运行登录脚本**：
+
    ```bash
    node win_login.js
    ```
+
    脚本会自动打开 Chrome 浏览器进行登录，通过验证后将 Cookie 保存到 `cookie.json`。
-3. **完成**：`cookie.json` 生成后，直接运行续期脚本即可。
+3. **配置 Chrome 路径**：
+   打开 `win_login.js`，找到 `const CHROME_PATH = ...` 这一行。
+   将路径修改为你本机 Chrome 的实际安装路径（例如 `'D:\\Software\\Chrome\\Application\\chrome.exe'`）。
+#### **一键运行**：
+   双击 `start.bat` 脚本。
+   它会自动执行：**登录获取 Cookie** → **生成 `cookie.json`** → **执行续期**。
 
 ## ⚙️ 配置说明
 
@@ -152,39 +157,6 @@ const RENEW_DAYS = 10;  // 续期天数，默认 10 天
 const COOKIE_FILE = path.join(__dirname, 'cookie.json');  // Cookie 文件路径
 const CACHE_FILE = path.join(__dirname, 'hiden_cookies_cache.json');  // 缓存文件路径
 ```
-
-## 📁 文件说明
-
-### 主要文件
-
-- `local_renew.js` - 本地/云端通用脚本（支持双模式）
-- `qinglong.js` - 青龙面板专用脚本
-- `update_vars.js` - GitHub 仓库变量更新工具
-- `.github/workflows/renew.yml` - GitHub Actions 工作流配置
-
-### 配置文件
-
-- `cookie.json` - 本地模式 Cookie 配置文件
-- `hiden_cookies_cache.json` - Cookie 缓存文件（自动生成）
-- `package.json` - Node.js 依赖配置
-
-### 文档
-
-- `README.md` - 中文文档（当前文件）
-- `README_EN.md` - 英文文档
-- `start.md` / `start.bat` - 快速开始指南
-
-## 🔧 运行流程
-
-1. 读取 `cookie.json` 中的 Cookie 配置
-2. 优先使用缓存的最新 Cookie（如有）
-3. 验证登录状态
-4. 获取账号下的所有服务列表
-5. 逐个处理每个服务：
-   - 提交续期请求
-   - 自动完成支付
-6. 更新 Cookie 缓存
-7. 输出处理结果汇总
 
 ## 📊 运行示例
 
@@ -250,16 +222,15 @@ crontab -e
 
 ## 🆚 部署方式对比
 
-| 特性            | 本地运行     | GitHub Actions    | 青龙面板    |
-| --------------- | ------------ | ----------------- | ----------- |
-| 运行环境        | 本地 Node.js | GitHub 云端       | 青龙容器    |
-| Cookie 来源     | cookie.json  | 仓库变量          | 环境变量    |
-| 自动定时        | 需手动设置   | ✅ 内置           | ✅ 内置     |
-| Cookie 自动更新 | ✅ 本地缓存  | ✅ 自动推送到仓库 | ✅ 本地缓存 |
-| 消息推送        | ❌           | ❌                | ✅          |
-| 多账号支持      | ✅           | ✅                | ✅          |
-| 免费使用        | ✅           | ✅                | 需自建      |
-| 推荐指数        | ⭐⭐⭐       | ⭐⭐⭐⭐⭐        | ⭐⭐⭐⭐    |
+| 特性            | 本地运行     | GitHub Actions                           | 青龙面板    |
+| --------------- | ------------ | ---------------------------------------- | ----------- |
+| 运行环境        | 本地 Node.js | GitHub 云端                              | 青龙容器    |
+| Cookie 来源     | cookie.json  | 仓库变量                                 | 环境变量    |
+| 自动定时        | 需手动设置   | ✅ 内置                                  | ✅ 内置     |
+| Cookie 自动更新 | ✅ 本地缓存  | ❌ 每次IP不同，保存COOKIE下次也无法使用 | ✅ 本地缓存 |
+| 消息推送        | ❌           | ❌                                       | ✅          |
+| 多账号支持      | ✅           | ✅                                       | ✅          |
+| 推荐指数        | ⭐⭐⭐       | ⭐⭐⭐⭐⭐                               | ⭐⭐⭐⭐    |
 
 ## 🐛 问题排查
 
@@ -284,7 +255,7 @@ crontab -e
 npm cache clean --force
 
 # 重新安装
-npm install axios cheerio
+npm install
 ```
 
 ### 网络超时
@@ -303,4 +274,4 @@ MIT License
 
 ## 🙏 致谢
 
-感谢 [gally16](https://linux.do/u/gally16)提供的青龙脚本！本项目在此基础上进行了优化和Github Actions部署和windows部署。
+感谢 [gally16](https://linux.do/u/gally16) 提供的青龙脚本！本项目在此基础上进行了优化和Github Actions部署和windows部署。
