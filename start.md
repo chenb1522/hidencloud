@@ -6,10 +6,10 @@
 
 ## 📍 方案选择
 
-| 方案 | 适合人群 | 优势 | 劣势 |
-|------|---------|------|------|
-| **本地方案** | 新手、需要立即使用 | 简单直接、无需配置 | 需要手动运行 |
-| **云端方案** | 追求自动化的用户 | 完全自动化、无需本地环境 | 需要配置 GitHub |
+| 方案               | 适合人群           | 优势                     | 劣势            |
+| ------------------ | ------------------ | ------------------------ | --------------- |
+| **本地方案** | 新手、需要立即使用 | 简单直接、无需配置       | 需要手动运行    |
+| **云端方案** | 追求自动化的用户   | 完全自动化、无需本地环境 | 需要配置 GitHub |
 
 ---
 
@@ -57,6 +57,7 @@ node local_renew.js
 ### ✅ 完成！
 
 脚本会自动：
+
 - ✨ 验证登录状态
 - 📋 获取所有服务列表
 - 🔄 自动续期所有服务
@@ -69,7 +70,7 @@ node local_renew.js
 
 1. 打开「任务计划程序」
 2. 创建基本任务
-3. 触发器：每 7 天
+3. 触发器：每 5 天
 4. 操作：启动程序 `start.bat`
 
 ---
@@ -90,12 +91,13 @@ node local_renew.js
 #### 2.1 创建 Token
 
 1. 访问 GitHub 个人设置
+
    - 点击右上角头像 → **Settings**
-
 2. 进入开发者设置
-   - 左侧边栏底部 → **Developer settings**
 
+   - 左侧边栏底部 → **Developer settings**
 3. 创建 Fine-grained token（推荐）
+
    - 点击 **Personal access tokens** → **Fine-grained tokens**
    - 点击 **Generate new token**
 
@@ -103,11 +105,11 @@ node local_renew.js
 
 **重要配置项：**
 
-| 配置项 | 设置值 |
-|--------|--------|
-| Token name | 任意名称，如 `HidenCloud Renew` |
-| Expiration | 建议选择 `90 days` 或 `No expiration` |
-| Resource owner | 选择你的账号 |
+| 配置项            | 设置值                                                   |
+| ----------------- | -------------------------------------------------------- |
+| Token name        | 任意名称，如 `HidenCloud Renew`                        |
+| Expiration        | 建议选择 `90 days` 或 `No expiration`                |
+| Resource owner    | 选择你的账号                                             |
 | Repository access | **Only select repositories** → 选择你 Fork 的仓库 |
 
 **权限设置（Permissions）：**
@@ -176,15 +178,18 @@ node local_renew.js
 ### ✅ 完成！
 
 **自动运行：**
-- 每 7 天自动触发一次
+
+- 每 5 天自动触发一次
 - 可在 Actions 页面随时手动运行
 
 **Cookie 自动更新：**
+
 - 脚本执行完成后自动更新仓库变量
 - 下次运行会使用最新的 Cookie
 - 无需手动维护
 
 **查看运行记录：**
+
 - Actions 页面可查看所有运行历史
 - 点击任意记录可查看详细日志
 
@@ -199,6 +204,7 @@ A: 见上方「步骤 1️⃣：获取 Cookie」。
 ### Q: GitHub Actions 运行失败怎么办？
 
 A: 检查以下几点：
+
 1. `ACTION_VARS_TOKEN` 是否正确设置
 2. Token 是否有 Variables (Read and write) 权限
 3. 仓库变量 `COOKIE1` 等是否已配置
