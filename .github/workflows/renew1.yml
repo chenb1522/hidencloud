@@ -26,18 +26,10 @@ jobs:
           npm install
           npx playwright install-deps chrome
       
-      - name: Login and Generate Cookies
+      - name: Run Unified Renewal Script
         env:
           USERS_JSON: ${{ secrets.USERS_JSON }}
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" node login.js
-      
-      - name: Run Renewal Script
-        # Cookies are automatically available from GITHUB_ENV in subsequent steps as env vars?
-        # Actually GITHUB_ENV writes env vars for *subsequent* steps.
-        # So we don't need to explicitly pass them in `env:` block if we named them COOKIE1, COOKIE2 etc.
-        # However, to be explicit and safe we can try to rely on them being in the environment.
-        # local_renew.js reads process.env.COOKIE1, etc.
-        run: node local_renew.js
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" node action_renew.js
       
       - name: Upload Screenshots (Debug)
         if: always()
