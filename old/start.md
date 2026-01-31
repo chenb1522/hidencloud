@@ -83,30 +83,93 @@ node local_renew.js
 
 访问项目 GitHub 页面，点击右上角 **Fork** 按钮，将仓库复制到你的账号下。
 
-### 步骤 2️⃣：配置仓库 Secret
+### 步骤 2️⃣：获取 GitHub Personal Access Token
+
+> [!IMPORTANT]
+> 这个 Token 用于让 GitHub Actions 自动更新仓库变量中的 Cookie。
+
+#### 2.1 创建 Token
+
+1. 访问 GitHub 个人设置
+
+   - 点击右上角头像 → **Settings**
+2. 进入开发者设置
+
+   - 左侧边栏底部 → **Developer settings**
+3. 创建 Fine-grained token（推荐）
+
+   - 点击 **Personal access tokens** → **Fine-grained tokens**
+   - 点击 **Generate new token**
+
+#### 2.2 配置 Token 权限
+
+**重要配置项：**
+
+| 配置项            | 设置值                                                   |
+| ----------------- | -------------------------------------------------------- |
+| Token name        | 任意名称，如 `HidenCloud Renew`                        |
+| Expiration        | 建议选择 `90 days` 或 `No expiration`                |
+| Resource owner    | 选择你的账号                                             |
+| Repository access | **Only select repositories** → 选择你 Fork 的仓库 |
+
+**权限设置（Permissions）：**
+
+展开 **Repository permissions**，找到以下项目并设置：
+
+- **Variables**: 设置为 `Read and write` ✅ **（必须）**
+
+其他权限保持默认即可。
+
+#### 2.3 生成并保存 Token
+
+1. 点击页面底部 **Generate token**
+2. **立即复制** Token（格式：`github_pat_xxxxx`）
+3. ⚠️ Token 只显示一次，请妥善保存
+
+### 步骤 3️⃣：配置仓库 Secret
 
 1. 进入你 Fork 的仓库
 2. 点击 **Settings** → **Secrets and variables** → **Actions**
 3. 点击 **New repository secret**
 4. 配置 Secret：
-   - **Name**: `USERS_JSON`
-   - **Secret**: 粘贴你的账号配置 JSON（如下格式）
-     ```json
-     [
-       {"username": "user1@example.com", "password": "password123"},
-       {"username": "user2@example.com", "password": "password456"}
-     ]
-     ```
+   - **Name**: `ACTION_VARS_TOKEN`
+   - **Secret**: 粘贴刚才复制的 Token
 5. 点击 **Add secret**
 
-### 步骤 3️⃣：启用 GitHub Actions
+### 步骤 4️⃣：配置仓库变量（Variables）
+
+> [!NOTE]
+> 这里存储你的 Cookie，脚本会自动读取并在执行后更新。
+
+1. 同样在 **Settings** → **Secrets and variables** → **Actions**
+2. 切换到 **Variables** 标签
+3. 点击 **New repository variable**
+4. 依次添加以下变量：
+
+#### 第一个账号：
+
+- **Name**: `COOKIE1`
+- **Value**: 粘贴第一个账号的完整 Cookie
+- 点击 **Add variable**
+
+#### 第二个账号（如有）：
+
+- **Name**: `COOKIE2`
+- **Value**: 粘贴第二个账号的完整 Cookie
+- 点击 **Add variable**
+
+#### 更多账号（如有）：
+
+继续添加 `COOKIE3`, `COOKIE4` ... 最多支持 10 个账号。
+
+### 步骤 5️⃣：启用 GitHub Actions
 
 1. 点击仓库顶部的 **Actions** 标签
 2. 如果看到提示，点击 **I understand my workflows, go ahead and enable them**
 
-### 步骤 4️⃣：手动测试运行
+### 步骤 6️⃣：手动测试运行
 
-1. 在 **Actions** 页面，左侧选择 **Katabump Auto Renew New**
+1. 在 **Actions** 页面，左侧选择 **HidenCloud Auto Renew**
 2. 点击右侧 **Run workflow** 按钮
 3. 再次点击绿色的 **Run workflow** 确认
 4. 等待几秒，页面会出现新的运行记录

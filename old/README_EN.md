@@ -36,25 +36,33 @@ Fully automated in the cloud, no local environment needed, automatic Cookie upda
 
 1. **Fork this repository** to your GitHub account
 
-39: 2. **Set Repository Secret**
-40:    - Go to your forked repository → Settings → Secrets and variables → Actions
-41:    - Click New repository secret
-42:    - Name: `USERS_JSON`
-43:    - Secret: Paste your account configuration JSON (format below)
-44:      ```json
-45:      [
-46:        {"username": "user1@example.com", "password": "password123"},
-47:        {"username": "user2@example.com", "password": "password456"}
-48:      ]
-49:      ```
-50: 
-51: 3. **Enable GitHub Actions**
-52:    - Go to Actions tab
-53:    - If prompted, click "I understand my workflows, go ahead and enable them"
-54: 
-55: 4. **Manual Test Run**
-56:    - Actions → Katabump Auto Renew New → Run workflow
-57:    - Check run logs to confirm success
+2. **Get Personal Access Token (PAT)**
+   - Visit GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens
+   - Click Generate new token
+   - Repository access: Select your forked repository
+   - Permissions → Repository permissions → Variables: Set to **Read and write**
+   - Generate and copy the Token (format: `github_pat_xxx`)
+
+3. **Set Repository Secret**
+   - Go to your forked repository → Settings → Secrets and variables → Actions
+   - Click New repository secret
+   - Name: `ACTION_VARS_TOKEN`
+   - Secret: Paste your Token
+
+4. **Set Repository Variables**
+   - Same location: Settings → Secrets and variables → Actions → Variables tab
+   - Add variables:
+     - `COOKIE1`: Complete cookie for first account
+     - `COOKIE2`: Complete cookie for second account (if any)
+     - `COOKIE3`, `COOKIE4`... (as needed)
+
+5. **Enable GitHub Actions**
+   - Go to Actions tab
+   - If prompted, click "I understand my workflows, go ahead and enable them"
+
+6. **Manual Test Run**
+   - Actions → HidenCloud Auto Renew → Run workflow
+   - Check run logs to confirm success
 
 **Workflow Details:**
 - Auto-run: Triggers every 3 days automatically

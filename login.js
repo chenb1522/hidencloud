@@ -264,6 +264,14 @@ async function handleVerification(page) {
             const cookies = await context.cookies();
             const cookieStr = cookies.map(c => `${c.name}=${c.value}`).join('; ');
 
+            // Validate hc_cf_turnstile presence as requested by user
+            const turnstileCookie = cookies.find(c => c.name === 'hc_cf_turnstile');
+            if (turnstileCookie) {
+                console.log(`✅ Extracted hc_cf_turnstile: ${turnstileCookie.value.substring(0, 15)}...`);
+            } else {
+                console.warn('⚠️ WARNING: hc_cf_turnstile cookie NOT found! Renewal might fail.');
+            }
+
             // 6. Export to Env
             // GitHub Actions format: `COOKIE{i+1}={value} >> $GITHUB_ENV`
             const envName = `COOKIE${i + 1}`;

@@ -38,28 +38,33 @@
 **配置步骤：**
 
 1. **Fork 本仓库**到你的 GitHub 账号
-1. **Fork 本仓库**到你的 GitHub 账号
-2. **设置仓库 Secret**
+2. **获取 Personal Access Token (PAT)**
+
+   - 访问 GitHub Settings → Developer settings → Personal access tokens → Fine-grained tokens
+   - 点击 Generate new token
+   - Repository access: 选择你 Fork 的仓库
+   - Permissions → Repository permissions → Variables: 设置为 **Read and write**
+   - 生成并复制 Token（格式：`github_pat_xxx`）
+3. **设置仓库 Secret**
 
    - 进入你 Fork 的仓库 → Settings → Secrets and variables → Actions
    - 点击 New repository secret
-   - Name: `USERS_JSON`
-   - Secret: 粘贴你的账号配置 JSON（格式如下）
-     ```json
-     [
-       {"username": "user1@example.com", "password": "password123"},
-       {"username": "user2@example.com", "password": "password456"}
-     ]
-     ```
+   - Name: `ACTION_VARS_TOKEN`
+   - Secret: 粘贴你的 Token
+4. **设置仓库变量（Variables）**
 
-3. **启用 GitHub Actions**
+   - 同样在 Settings → Secrets and variables → Actions → Variables 标签
+   - 依次添加变量：
+     - `COOKIE1`: 第一个账号的完整 Cookie
+     - `COOKIE2`: 第二个账号的完整 Cookie（如有）
+     - `COOKIE3`, `COOKIE4`... (根据需要)
+5. **启用 GitHub Actions**
 
    - 进入 Actions 标签
    - 如果看到提示，点击 "I understand my workflows, go ahead and enable them"
+6. **手动运行测试**
 
-4. **手动运行测试**
-
-   - Actions → Katabump Auto Renew New → Run workflow
+   - Actions → HidenCloud Auto Renew → Run workflow
    - 查看运行日志确认成功
 
 **工作流说明：**
